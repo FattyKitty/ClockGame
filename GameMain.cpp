@@ -18,17 +18,17 @@ int main()
 	SetConsoleDisplayMode(GetStdHandle(STD_OUTPUT_HANDLE), CONSOLE_FULLSCREEN_MODE, &coord);
 
 
-	int speed = 15; //параметр скорости перемещения главного героя
-	bool flag = false; //проверка на взятую аптечку
-	Frame Buzzer(960, 600, 80, 160); //объект главный герой
+	int speed = 15; //speed movement parameter of hero by default
+	bool flag = false; //check for used medicine
+	Frame Buzzer(960, 600, 80, 160); //hero object
 
-	Healer heal(0, 0, 0, 0); //объект аптечка
+	Healer heal(0, 0, 0, 0); //medicine object
 
-	Point* rounds[3]; //массив объектов, для перемещения врагов на экране
-	Enemy round(0, 0); //обычный противник, двигающийся по прямой 
-	WiseEnemy sinus(0, 0); //противник двигающийся по синусоиде
-	SickClocks Object(900, 1000, 80, 160); //больные часы (ловушка)
-	FireClocks Fire(500, 1000, 80, 160); //часы-помощники 
+	Point* rounds[3]; //enemies
+	Enemy round(0, 0); //usual enemy, moving straight
+	WiseEnemy sinus(0, 0); //enemy, which moves by sinus law
+	SickClocks Object(900, 1000, 80, 160); //sick watches (trap)
+	FireClocks Fire(500, 1000, 80, 160); //helper
 
 	rounds[0] = &round;
 	rounds[1] = &sinus;
@@ -37,32 +37,32 @@ int main()
 		hdc = GetDC(hwnd);
 		while (hdc != 0)
 		{
-			if (Buzzer.LivesStat(0) < 0) //пока не потратил все жизни
+			if (Buzzer.LivesStat(0) < 0) //while has lives
 				hdc = 0;
 			for (int i = 0; i < 2; i++)
-				rounds[i]->Spawn(); //спавн двух шариков 
-			if (Buzzer.LivesStat(0) == 0 and heal.Ressurect() == 3) //если 0 жизней, но есть 3 очка возрождения
+				rounds[i]->Spawn(); //spawn two balls
+			if (Buzzer.LivesStat(0) == 0 and heal.Ressurect() == 3) //if 0 lives, spawn a medicine
 			{
 				flag = true;
-				heal.Spawn(); //спавн аптечки
-				heal.Show(); //показать аптечку
-				heal.DelChance(); //обнулить шанс выпадения второй аптечки
+				heal.Spawn(); //spawn medicine
+				heal.Show(); //show medicine
+				heal.DelChance(); //second medkit will not spawn
 			}
-			if ((heal.GetX() >= Buzzer.GetX() and heal.GetX() <= Buzzer.SizeX()) and (heal.GetY() >= Buzzer.GetY() and heal.GetY() <= Buzzer.SizeY())) //если поймал аптечку
+			if ((heal.GetX() >= Buzzer.GetX() and heal.GetX() <= Buzzer.SizeX()) and (heal.GetY() >= Buzzer.GetY() and heal.GetY() <= Buzzer.SizeY())) //if catched medkit
 			{
-				Buzzer.LivesStat(4); //восстановить жизни
-				heal.Hide(); //спрятать аптечку
+				Buzzer.LivesStat(4); //restore lives
+				heal.Hide(); //hide medkit
 				flag = false;
 			}
-			for (int i = 0; i < 2; i++) //функция столкновения часов с иными объектами
+			for (int i = 0; i < 2; i++) //collision with other objects
 			{
 				rounds[i]->MoveTo(0, 5);
-				if ((rounds[i]->GetX() >= Buzzer.GetX() and rounds[i]->GetX() <= Buzzer.SizeX()) and (rounds[i]->GetY() >= Buzzer.GetY() and rounds[i]->GetY() <= Buzzer.SizeY()) and rounds[i]->returnfriend() >= 50) //если столкнулся с шариком
+				if ((rounds[i]->GetX() >= Buzzer.GetX() and rounds[i]->GetX() <= Buzzer.SizeX()) and (rounds[i]->GetY() >= Buzzer.GetY() and rounds[i]->GetY() <= Buzzer.SizeY()) and rounds[i]->returnfriend() >= 50) //collided with ball
 				{
-					Buzzer.Reduce(10); //красный шарик уменьшил часы
-					rounds[i]->MoveTo(0, 1300); //улетел за границы экрана
+					Buzzer.Reduce(10); //red ball reduces size of clocks
+					rounds[i]->MoveTo(0, 1300); //flew away from screen
 					Buzzer.HideInd(0);
-					Buzzer.LivesStat(-1); //уменьшил количество жизней
+					Buzzer.LivesStat(-1); //shorts amount of lives
 				}
 				else if ((rounds[i]->GetX() >= Buzzer.GetX() and rounds[i]->GetX() <= Buzzer.SizeX()) and (rounds[i]->GetY() >= Buzzer.GetY() and rounds[i]->GetY() <= Buzzer.SizeY()))
 				{
@@ -76,41 +76,41 @@ int main()
 					rounds[i]->MoveTo(0, 1300);
 				}
 			}
-			if (Buzzer.TakePoint(0) == 5 and flag == false) //если у главного героя 5 очков, то показать огненные часы и больные часы
+			if (Buzzer.TakePoint(0) == 5 and flag == false) //if hero has 5 points of energy show sick and fire clocks
 
 			{
 				Fire.Show();
 				Object.Show();
 			}
-			if ((Object.GetX() >= Buzzer.GetX() and Object.GetX() <= Buzzer.SizeX()) and (Object.GetY() >= Buzzer.GetY() and Object.GetY() <= Buzzer.SizeY())) //если врезался в огненные часы
+			if ((Object.GetX() >= Buzzer.GetX() and Object.GetX() <= Buzzer.SizeX()) and (Object.GetY() >= Buzzer.GetY() and Object.GetY() <= Buzzer.SizeY())) //collided with sick clocks
 			{
-				speed -= 10; //снизить скорость на 10
-				Buzzer.TakePoint(-2); //уменьшить количество очков на 2
-				Buzzer.LivesStat(-3); //уменьшить количество жизней на 3
-				Object.Hide(); //спрятать огненные часы и больные часы
+				speed -= 10; //reduce speed by 10
+				Buzzer.TakePoint(-2); //score reduce by 10
+				Buzzer.LivesStat(-3); //lives score reduce by 3
+				Object.Hide(); //hide fire and sick clocks
 
 				Fire.Hide();
-				Object.MoveTo(-900, -1000); //переместить их за игровую область
+				Object.MoveTo(-900, -1000); //move them awayy from gaming zone
 				Fire.MoveTo(-500, 1000);
 				flag = true;
 			}
-			if ((Fire.GetX() >= Buzzer.GetX() and Fire.GetX() <= Buzzer.SizeX()) and (Fire.GetY() >= Buzzer.GetY() and Fire.GetY() <= Buzzer.SizeY()))
+			if ((Fire.GetX() >= Buzzer.GetX() and Fire.GetX() <= Buzzer.SizeX()) and (Fire.GetY() >= Buzzer.GetY() and Fire.GetY() <= Buzzer.SizeY())) //collided with fire clocks
 			{
-				if (speed < 25) //увеличить скорость
+				if (speed < 25) //adds some speed
 					speed += 10;
-				Object.MoveTo(-900, -1000); //переместить огненные и больные часы за область экрана
+				Object.MoveTo(-900, -1000); //move sick and fire watches away from the screen
 				Fire.MoveTo(-500, 1000);
 				Fire.Hide();
 				Object.Hide();
 				flag = true;
 			}
-			if (KEY_DOWN(37)) //стрелка влево
+			if (KEY_DOWN(37)) //left arrow
 				Buzzer.MoveTo(-speed, 0);
-			if (KEY_DOWN(38)) //стрелка вверх
+			if (KEY_DOWN(38)) //up arrow
 				Buzzer.MoveTo(0, -speed);
-			if (KEY_DOWN(39)) //стрелка вправо
+			if (KEY_DOWN(39)) //right arrow
 				Buzzer.MoveTo(speed, 0);
-			if (KEY_DOWN(40)) //стрелка вниз
+			if (KEY_DOWN(40)) //down arrow
 				Buzzer.MoveTo(0, +speed);
 			if (KEY_DOWN(107))
 				Buzzer.TakePoint(1);

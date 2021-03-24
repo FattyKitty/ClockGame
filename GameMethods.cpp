@@ -70,10 +70,10 @@ void Point::Spawn()
 {
 }
 
-void Clocks::Show() //показывает объектов часов целиком
+void Clocks::Show() //shows clocks
 {
-	char Message[] = "Lives:  "; //линия жизней
-	char Score[] = "Score:  "; //линия очков
+	char Message[] = "Lives:  "; //lives line
+	char Score[] = "Score:  "; //score line
 	int param = 0;
 	RECT r;
 	r.left = X;
@@ -81,11 +81,11 @@ void Clocks::Show() //показывает объектов часов целиком
 	r.bottom = Y;
 	r.top = Y + Height;
 	BuzzerColor();
-	HPEN pen = CreatePen(PS_SOLID, 4, RGB(255, 0, 0)); //красный цвет рисовки
+	HPEN pen = CreatePen(PS_SOLID, 4, RGB(255, 0, 0));
 	SelectObject(hdc, pen);
 	Message[8] = Lives + '0';
 	Score[7] = Points + '0';
-	TextOutA(hdc, X, r.top - Width * 0.1, (LPCSTR)Message, 9); //вывод марки производителя на часах
+	TextOutA(hdc, X, r.top - Width * 0.1, (LPCSTR)Message, 9); //show trademark on clocks
 	TextOutA(hdc, X + Width / 2, r.top - Width * 0.1, (LPCSTR)Score, 8);
 	EnergyBar();
 	if (LivesStat(0) == 4)
@@ -102,9 +102,9 @@ void Clocks::Show() //показывает объектов часов целиком
 
 void Clocks::ShowTime()
 {
-	HPEN pen = CreatePen(PS_SOLID, 4, RGB(255, 0, 0)); //красный цвет рисовки
+	HPEN pen = CreatePen(PS_SOLID, 4, RGB(255, 0, 0)); 
 	SelectObject(hdc, pen);
-	for (int i = Width * 0.25; i < Width * 0.75; i += Width * 0.1) //рисуем время на часах
+	for (int i = Width * 0.25; i < Width * 0.75; i += Width * 0.1) //drawing time on clocks
 	{
 		ShowInd(&i);
 		MoveToEx(hdc, X + i, Y + Height / 2, NULL);
@@ -112,11 +112,11 @@ void Clocks::ShowTime()
 	}
 	DeleteObject(SelectObject(hdc, pen));
 }
-void Clocks::HideTime() //спрятать индикаторы времени на часах
+void Clocks::HideTime() //hide time indicator
 {
-	HPEN pen = CreatePen(PS_SOLID, 4, RGB(169, 169, 169)); //красный цвет рисовки
+	HPEN pen = CreatePen(PS_SOLID, 4, RGB(169, 169, 169));
 	SelectObject(hdc, pen);
-	for (int i = Width * 0.25; i < Width * 0.75; i += Width * 0.1) //рисуем время на часах
+	for (int i = Width * 0.25; i < Width * 0.75; i += Width * 0.1) //drawing time on clocks
 	{
 		if (Width * 0.5 - Width * 0.1 < i && Width * 0.5 + Width * 0.1 > i)
 		{
@@ -129,7 +129,7 @@ void Clocks::HideTime() //спрятать индикаторы времени на часах
 	}
 	DeleteObject(SelectObject(hdc, pen));
 }
-void Clocks::EnergyBar() //функция отрисовки шкалы энергии
+void Clocks::EnergyBar() //shows energy
 {
 	HPEN pen = CreatePen(PS_SOLID, 4, RGB(0, 255, 0));
 	SelectObject(hdc, pen);
@@ -153,28 +153,28 @@ void Clocks::EnergyBar() //функция отрисовки шкалы энергии
 	}
 	DeleteObject(SelectObject(hdc, pen));
 }
-void Clocks::HideInd(int* i) //спрятать точки часов
+void Clocks::HideInd(int* i) //hide dots on time screnn of watches 
 {
-	HPEN pen = CreatePen(PS_SOLID, 4, RGB(169, 169, 169)); //красный цвет рисовки
+	HPEN pen = CreatePen(PS_SOLID, 4, RGB(169, 169, 169));
 	SelectObject(hdc, pen);
-	for (*i = Width * 0.25; *i < Width * 0.75; *i += Width * 0.1) //рисуем время на часах
+	for (*i = Width * 0.25; *i < Width * 0.75; *i += Width * 0.1) //drawing time
 	{
 		if (Width * 0.5 - Width * 0.1 < *i && Width * 0.5 + Width * 0.1 > *i)
 		{
 			*i = Width * 0.45;
-			Ellipse(hdc, X + *i - radius, Y + Height / 2 - radius, X + *i + radius, Y + Height / 2 + radius); //рисуем точки на середине дисплея
+			Ellipse(hdc, X + *i - radius, Y + Height / 2 - radius, X + *i + radius, Y + Height / 2 + radius); //drowing dots on med of display
 			Ellipse(hdc, X + *i - radius, Y + Height / 4 - radius, X + *i + radius, Y + Height / 4 + radius);
 			*i = Width * 0.6;
 		}
 	}
 	DeleteObject(SelectObject(hdc, pen));
 }
-void Clocks::ShowInd(int* i) //показать точки часов
+void Clocks::ShowInd(int* i) //show dots
 {
 	if (Width * 0.5 - Width * 0.1 < *i && Width * 0.5 + Width * 0.1 > *i)
 	{
 		*i = Width * 0.45;
-		Ellipse(hdc, X + *i - radius, Y + Height / 2 - radius, X + *i + radius, Y + Height / 2 + radius); //рисуем точки на середине дисплея
+		Ellipse(hdc, X + *i - radius, Y + Height / 2 - radius, X + *i + radius, Y + Height / 2 + radius); //drowing dots on med of display
 		Ellipse(hdc, X + *i - radius, Y + Height / 4 - radius, X + *i + radius, Y + Height / 4 + radius);
 		*i = Width * 0.6;
 	}
@@ -190,21 +190,21 @@ Clocks::Clocks(int initX, int initY, int NHeight, int NWidth) :Point(initX, init
 	radius = 5;
 }
 
-int Clocks::TakePoint(int value) //съесть кружочек и получить очко
+int Clocks::TakePoint(int value) //eat ball and get score
 {
 	Points += value;
-	return Points; //сколько очков съел
+	return Points; 
 }
 void Clocks::Hide()
 {
-	RECT r; //конструктор прямоугольника, что принимает функция FillRect
+	RECT r; //constructor
 	r.left = X;
 	r.right = X + Width;
 	r.bottom = Y;
 	r.top = Y + Height;
 	FillRect(hdc, &r, (HBRUSH)CreateSolidBrush(RGB(255, 255, 255)));
 }
-void Clocks::Expand(int value) //расширяет часы на экране
+void Clocks::Expand(int value) //wides clocks on the screen
 {
 	Hide(); //спратать
 	if (Height > 75 or value > 0)
@@ -215,25 +215,25 @@ void Clocks::Expand(int value) //расширяет часы на экране
 	Y -= value / 2;
 	Show(); //показать
 }
-void Clocks::Reduce(int value) //уменьшает размер часов на экране
+void Clocks::Reduce(int value) //reduces size of clocks
 {
 	Expand(-value);
 }
-int Clocks::SizeX() //возвращает ширину часов
+int Clocks::SizeX() //returns clock's width
 {
 	return X + Width;
 }
-int Clocks::SizeY() //возвращает высоту часов
+int Clocks::SizeY() //returns clock's height
 {
 	return Y + Height;
 }
-int Clocks::LivesStat(int value) //функция лечения
+int Clocks::LivesStat(int value) //heal function
 {
 	Lives += value;
 
-	if (value == 4) //если поймал аптечку
+	if (value == 4) //catched medkit
 	{
-		Lives = value; //восстановить все жизни
+		Lives = value; //restore lives
 	}
 	return Lives;
 }
@@ -249,9 +249,9 @@ void Clocks::BuzzerColor()
 }
 void Frame::Show()
 {
-	HPEN pen = CreatePen(PS_SOLID, 4, RGB(0, 0, 0)); //черный цвет рисования
+	HPEN pen = CreatePen(PS_SOLID, 4, RGB(0, 0, 0));
 	SelectObject(hdc, pen);
-	Rectangle(hdc, X - 5, Y + Height + 5, X + Width + 5, Y - 5); //рисуется незакрашенный прямоугол
+	Rectangle(hdc, X - 5, Y + Height + 5, X + Width + 5, Y - 5);
 	Clocks::Show();
 	DeleteObject(SelectObject(hdc, pen));
 }
@@ -280,10 +280,10 @@ Enemy::Enemy(int initX, int initY) :Point(initX, initY)
 void Enemy::Spawn()
 {
 
-	if (Visible == false) //если предыдущего объекта на экране нет, то спавнит новый объект
+	if (Visible == false) //if enemy out of range spawns new ball
 	{
-		friendorfoe = rand() % 100 + 0; //рандомит врага или друга
-		X = rand() % 1920 + 0; //координаты спавна
+		friendorfoe = rand() % 100 + 0; //friend or foe chance 
+		X = rand() % 1920 + 0; //spawn coords
 		Y = 0;
 		Visible = true;
 	}
@@ -293,20 +293,20 @@ void Enemy::MoveTo(int NewX, int NewY)
 {
 	Hide();
 	Y += NewY;
-	if (Y >= 1300) //вылетел ли за границы экрана
+	if (Y >= 1300) //is out of range
 		Visible = false;
 	Show();
-	Sleep(10); //задает скороть бега кружочка по экрану
+	Sleep(10); //sets movement speed
 }
 
-void Enemy::Show() //отрисовывает энергию
+void Enemy::Show() //draws energy
 {
 
 	HBRUSH brush;
-	if (friendorfoe >= 50) //враг
+	if (friendorfoe >= 50) //foe
 		brush = CreateSolidBrush(RGB(255, 0, 0));
 
-	else //друг
+	else //friend 
 		brush = CreateSolidBrush(RGB(0, 255, 0));
 
 	SelectObject(hdc, brush);
@@ -315,7 +315,7 @@ void Enemy::Show() //отрисовывает энергию
 
 }
 
-void Enemy::Hide() //прячет энергию
+void Enemy::Hide() //hides energy
 {
 	HPEN pen = CreatePen(PS_SOLID, 2, RGB(255, 255, 255));
 	SelectObject(hdc, pen);
@@ -328,14 +328,14 @@ void Enemy::Hide() //прячет энергию
 
 }
 
-int Enemy::returnfriend() //возвращет статус энергии
+int Enemy::returnfriend() //returns energy status
 {
 	return friendorfoe;
 }
 
 void Healer::Spawn()
 {
-	if (Visible == false) //рандом координат спавна клочка энергии
+	if (Visible == false) //spawns energy circle 
 	{
 		X = rand() % 1920 + 0;
 		Y = rand() % 1080 + 0;
@@ -343,7 +343,7 @@ void Healer::Spawn()
 	}
 
 }
-void Healer::Hide() //функция закрашивания аптечки белым, чтобы скрыть ее
+void Healer::Hide() //hides medkit
 {
 
 	HBRUSH brush = CreateSolidBrush(RGB(255, 255, 255));
@@ -353,14 +353,14 @@ void Healer::Hide() //функция закрашивания аптечки белым, чтобы скрыть ее
 	Y = 10000;
 	DeleteObject(brush);
 }
-Healer::Healer(int initX, int initY, int NHeight, int NWidth) :Point(initX, initY) //конструктор аптечки
+Healer::Healer(int initX, int initY, int NHeight, int NWidth) :Point(initX, initY) //medkit constructor
 
 {
 	size = 100;
 	ressurection = 3;
 }
 
-void Healer::Show() //отрисовка аптечки
+void Healer::Show() //shows medkit
 {
 	HBRUSH brush = CreateSolidBrush(RGB(94, 33, 0));
 
@@ -386,15 +386,15 @@ void Healer::Show() //отрисовка аптечки
 	DeleteObject(brush);
 }
 
-int Healer::Ressurect() //вовзращает число очков необходимых для спавна аптечки
+int Healer::Ressurect() //returns how manyn points u need to have to spawn a medkit
 {
 	return ressurection;
 }
-void Healer::DelChance() //убирает в ноль шанс спавна новой аптечки после появления предыдущей
+void Healer::DelChance() //sets zero chance of new medkit spawn
 {
 	ressurection = 0;
 }
-void Healer::GetScoreInExchange() //восстанавливает шанс появления аптечки
+void Healer::GetScoreInExchange() //restores chance of medkit spawn
 {
 	ressurection++;
 }
@@ -414,7 +414,7 @@ SickClocks::SickClocks(int initX, int initY, int NHeight, int NWidth) :Frame(ini
 	Height = NHeight;
 	Width = NWidth;
 }
-void SickClocks::BuzzerColor() //заливка зеленым цветом "больных часов"
+void SickClocks::BuzzerColor() //'sick clocks' (i was asked to add them), they are green ones
 {
 	RECT r;
 	r.left = X;
@@ -433,7 +433,7 @@ FireClocks::FireClocks(int initX, int initY, int NHeight, int NWidth) :Frame(ini
 	Width = NWidth;
 }
 
-void FireClocks::BuzzerColor() //функция заливки часов красным цветом, "огненные часы"
+void FireClocks::BuzzerColor() //red watches 
 {
 	RECT r;
 	r.left = X;
@@ -443,7 +443,7 @@ void FireClocks::BuzzerColor() //функция заливки часов красным цветом, "огненные
 	FillRect(hdc, &r, (HBRUSH)CreateSolidBrush(RGB(255, 0, 0)));
 }
 
-void FireClocks::EnergyBar() //функция отрисовки энергии часов
+void FireClocks::EnergyBar() //energy drawing
 {
 	HPEN pen = CreatePen(PS_SOLID, 4, RGB(0, 0, 255));
 	SelectObject(hdc, pen);
@@ -451,21 +451,21 @@ void FireClocks::EnergyBar() //функция отрисовки энергии часов
 	DeleteObject(pen);
 }
 
-void WiseEnemy::MoveTo(int NewX, int NewY) //функция передвижения синусоидальных часов
+void WiseEnemy::MoveTo(int NewX, int NewY) //balls who moves as sinus
 {
 	Hide();
 	NewY = 5;
 	Y += NewY;
-	NewX = sin(Y * 3.14 / 180) * 20; //функция расчета синусоиды
+	NewX = sin(Y * 3.14 / 180) * 20; //sin function
 	X += NewX;
-	if (Y >= 1300) //вылетел ли за границы экрана
+	if (Y >= 1300) //out of range or not
 		Visible = false;
 	Show();
 	Sleep(10);
 
 }
-WiseEnemy::WiseEnemy(int initX, int initY) :Enemy(initX, initY) //конструктор синусоидальных часов
+WiseEnemy::WiseEnemy(int initX, int initY) :Enemy(initX, initY) 
 {
-	Visible = false; //параметр видимости 
-	friendorfoe = 0; //тип объекта друг/враг
+	Visible = false; 
+	friendorfoe = 0; 
 }

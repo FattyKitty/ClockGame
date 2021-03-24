@@ -1,4 +1,7 @@
 #pragma once
+
+//clocks == buzzer 
+//sometimes i call it one way, sometimes another
 class Location
 {
 protected:
@@ -13,120 +16,121 @@ public:
 
 
 
-class Point :public Location //точка, первый видимый объект
+class Point :public Location //point, first visible object
 {
 protected:
 	bool Visible;
 public:
 	Point(int initX, int initY);
 	bool IsVisible();
-	virtual void Spawn(); //спавн точки
+	virtual void Spawn(); //spawn point
 	virtual int returnfriend();
 	virtual void setcolor();
-	virtual void MoveTo(int NewX, int NewY); //перемещает точку
-	virtual void Show(); //показать
-	virtual void Hide(); //закрасить
+	virtual void MoveTo(int NewX, int NewY); //moves point
+	virtual void Show(); //show it			//
+											// it means - point
+	virtual void Hide(); //hide it			//
 };
 
 
-class IClocks //интерфейс часов
+class IClocks //clocks interface
 {
 public:
-	virtual void ShowTime() = 0; //показать время (дисплей)
-	virtual void HideTime() = 0; //(спрятать дисплей)
-	virtual void BuzzerColor() = 0; //закрашивает будильник каким-то цветом
-	virtual void ShowInd(int* i) = 0; //показывает точки на дисплее
-	virtual void HideInd(int* i) = 0; //закрашивает точки на дисплее
-	virtual void EnergyBar() = 0; //полоска жизни
+	virtual void ShowTime() = 0; //show time (display)
+	virtual void HideTime() = 0; //hide display
+	virtual void BuzzerColor() = 0; //paints clock with some color
+	virtual void ShowInd(int* i) = 0; //shows dots on display
+	virtual void HideInd(int* i) = 0; //shows dots on display
+	virtual void EnergyBar() = 0; //live line
 };
 
 
-class Clocks :public IClocks, public Point //часы 
+class Clocks :public IClocks, public Point //clock
 {
 protected:
-	int Lives; //количество жизней
-	int Points; //количество очков
-	int Height; //высота часов
-	int radius; //радиус энергий
-	int Width; //ширина часов
+	int Lives; //amount of lives
+	int Points; //score points
+	int Height; //Height of clock
+	int radius; //radius of energy
+	int Width; //width of clock
 public:
 	Clocks(int initX, int initY, int NHeight, int NWidth);
-	int TakePoint(int value); //получить очко энергии
-	int LivesStat(int value); //возвращает, уменьшает и увеличивает переменную жизней
-	int SizeX(); //возвращает размер по X+ширина
-	int SizeY(); //возвращает размер по Y+высота
-	virtual void Hide() override; //спрятать часы
-	virtual void Show() override; //показать
-	virtual void ShowTime() override; //см интерфейс
+	int TakePoint(int value); //get energy score
+	int LivesStat(int value); //returns amount of lives left
+	int SizeX(); //returns X value + width
+	int SizeY(); //returns Y value + height
+	virtual void Hide() override; //hide clock
+	virtual void Show() override; //show clock
+	virtual void ShowTime() override; // shows time on clock
 	virtual void BuzzerColor() override;
 	virtual void EnergyBar() override;
 	virtual void ShowInd(int* i) override;
 	virtual void HideInd(int* i) override;
 	virtual void HideTime() override;
-	virtual void Expand(int value); //метод увеличения часов
-	virtual void Reduce(int value); //метод уменьшения часов
+	virtual void Expand(int value); //expands clocks
+	virtual void Reduce(int value); //reduces clocks
 
 };
 
-class Frame : public Clocks //класс рамки, обрамляющий часы
+class Frame : public Clocks //border around buzzer
 {
 public:
-	Frame(int iniX, int initY, int NHeight, int NWidth); //конструктор рамки
-	virtual void Show() override; //показать рамку
-	virtual void Hide() override; //спрятать рамку
+	Frame(int iniX, int initY, int NHeight, int NWidth); 
+	virtual void Show() override; //show border
+	virtual void Hide() override; //hide border
 };
 
-class Enemy :public Point //обычный противник, двигающийся по прямой
+class Enemy :public Point //usual enemy
 {
 protected:
-	int friendorfoe; //друг или враг
+	int friendorfoe; //friend or foe
 public:
 	Enemy(int initX, int initY);
-	virtual void MoveTo(int NewX, int NewY) override; //перемещение энергии по прямой
-	virtual void Show() override; //показать энергию
-	void Hide(); //спрятать энергию
-	virtual void Spawn() override; //спавнит энергию
-	virtual int returnfriend() override; //возвращает статус энергии
+	virtual void MoveTo(int NewX, int NewY) override; //moves by line 
+	virtual void Show() override; //show energy
+	void Hide(); //hide energy
+	virtual void Spawn() override; //spawns energy
+	virtual int returnfriend() override; //returns energy status
 
 
 };
-class WiseEnemy :public Enemy //противник, двигающийся по синусоиде
+class WiseEnemy :public Enemy //enemy which moves by sinus
 {
 public:
 	WiseEnemy(int iniX, int initY);
-	virtual void MoveTo(int NewX, int NewY) override; //двигает энергию по синусоиде
+	virtual void MoveTo(int NewX, int NewY) override; //moves energy by sinus law
 };
 
 
 class Healer :public Point //аптечка
 {
 protected:
-	int size; //размер аптечки
-	int ressurection; //шанс появления аптечки
+	int size; //size of medkit
+	int ressurection; //medkit's chance to appear
 public:
 	Healer(int initX, int initY, int NHeight, int NWidth);
 	void Spawn();
-	int Ressurect(); //исцелить будильник
-	void DelChance(); //удалить шанс появления аптечки
-	void GetScoreInExchange(); //всю схваченную энергию пускает на восстановление аптечки
+	int Ressurect(); //heal clocks (hero)
+	void DelChance(); //delete chance of medkit spawn
+	void GetScoreInExchange(); //energy goes to restore medkit
 	virtual void Show() override;
 	void Hide();
 
 };
 
-class FireClocks :public Frame //огненные часы дают скорость
+class FireClocks :public Frame //fire buzzer, gives u speed
 {
 public:
 	FireClocks(int initX, int initY, int NHeight, int NWidth);
-	virtual void BuzzerColor() override; //цвет часов
-	virtual void EnergyBar() override; //цвет шкалы энергии
+	virtual void BuzzerColor() override; //color of watches
+	virtual void EnergyBar() override; //energy line color
 
 };
 
-class SickClocks :public Frame //больные часы, отнимают скорость, наносят урон
+class SickClocks :public Frame //sick watches, cause damage
 {
 public:
 	SickClocks(int initX, int initY, int NHeight, int NWidth);
-	virtual void BuzzerColor() override; //цвет часов
-	virtual void EnergyBar() override; //цвет энергии
+	virtual void BuzzerColor() override; //buzzer color
+	virtual void EnergyBar() override; //energy color
 };
